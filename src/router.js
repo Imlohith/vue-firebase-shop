@@ -5,7 +5,11 @@ import Admin from "./views/Admin.vue";
 import Overview from "./views/Overview.vue";
 import Products from "./views/Products.vue";
 import Orders from "./views/Orders.vue";
-import {fb} from './firebase'
+import Reviews from "./views/Reviews.vue";
+import About from './views/About.vue';
+import Shop from './views/Shop.vue';
+import ProductView from './views/ProductDetail.vue';
+const fb = require('./firebase')
 
 Vue.use(Router);
 
@@ -17,6 +21,21 @@ const router =  new Router({
       path: "/",
       name: "home",
       component: Home
+    },
+    {
+      path: "/about",
+      name: 'about',
+      component: About
+    },
+    {
+      path: '/shop',
+      name: 'shop',
+      component: Shop,
+    }, 
+    {
+      path: '/proview',
+      name: 'proview',
+      component: ProductView
     },
     {
       path: "/admin",
@@ -38,28 +57,24 @@ const router =  new Router({
           path: "orders",
           name: "orders",
           component: Orders
+        },
+        {
+          path: "reviews",
+          name: "reviews",
+          component: Reviews
         }
       ]
     },
-    {
-      path: "about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
-    }
   ]
 });
 
 router.beforeEach((to, from, next) => {
 
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
-  const currentUser = fb.auth().currentUser
+  const currentUser = fb.auth.currentUser
 
   if (requiresAuth && !currentUser) {
-      next('/')
+     next('/')
   } else if (requiresAuth && currentUser) {
       next()
   } else {

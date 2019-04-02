@@ -26,8 +26,8 @@
             <button @click="addNew" class="btn btn-primary float-right">Add Product</button>
 
             <div class="table-responsive">
-              
-                <table class="table">
+               
+                <table class="table" >
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -35,11 +35,15 @@
                       <th>Modify</th>
                     </tr>
                   </thead>
-
-                  <tbody>
+                   <div class="d-flex justify-content-center"  v-if="loading">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                </div>
+                  <tbody v-if="products.length">
                       <tr v-for="product in products">
                         <td>
-                          {{product.name}}
+                          {{product.productName}}
                         </td>
 
                         <td>
@@ -56,6 +60,7 @@
 
 
                   </tbody>
+                  <span v-else>There are no currently products available</span>
                 </table>
             </div>
 
@@ -114,14 +119,12 @@
                     <div class="form-group d-flex">
                       <div class="p-1" v-for="image in product.images">
                           <img :src="image" alt="" width="80px">
+                          <span class="delete-img" @click="deleteImage(image, index)">X</span>
                       </div>
                     </div>
 
                   </div>
                 </div>
-
-
-
 
             </div>
             <div class="modal-footer">
@@ -139,8 +142,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { VueEditor } from "vue2-editor";
-import { fb, db} from '../firebase';
+const fb = require("../firebase");
 
 export default {
   name: "Products",
@@ -151,139 +155,169 @@ export default {
     msg: String
   },
 
-  data(){
+  data() {
     return {
-        products: [],
-        product: {
-          name:null,
-          description:null,
-          price:null,
-          tags:[],
-          images:[]
-        },
-        activeItem:null,
-        modal: null,
-        tag: null
-    }
+      product: {
+        name: null,
+        description: null,
+        price: null,
+        tags: [],
+        images: []
+      },
+      loading: false,
+      activeItem: null,
+      modal: null,
+      tag: null
+    };
   },
-
-  firestore(){
-      return {
-        products: db.collection('products'),
-      }
+  computed: {
+    ...mapState(["currentUser", "userProfile", "products"])
   },
-  methods:{
-
-    addTag(){
-       this.product.tags.push(this.tag);
-       this.tag = "";
+  // mounted() {
+  //   this.$binding("products", fb.productsCollection).then(products => {
+  //     products = products;
+  //   });
+  // },
+  methods: {
+    deleteImage(img, index) {
+      let image = fb.storage().refFromURL(img);
+      this.product.images.splice(index, 1);
+      image
+        .delete()
+        .then(function() {
+          console.log("image deleted");
+        })
+        .catch(function(error) {
+          // Uh-oh, an error occurred!
+          console.log("an error occurred");
+        });
     },
-    uploadImage(e){
+    addTag() {
+      this.product.tags.push(this.tag);
+      this.tag = "";
+    },
+    uploadImage(e) {
+      if (e.target.files[0]) {
+        let file = e.target.files[0];
 
-      if(e.target.files[0]){
-        
-          let file = e.target.files[0];
-    
-          var storageRef = fb.storage().ref('products/'+ file.name);
-    
-          let uploadTask  = storageRef.put(file);
-    
-          uploadTask.on('state_changed', (snapshot) => {
-            
-          }, (error) => {
+        var storageRef = fb
+          .storage()
+          .ref("products/" + Math.random() + "_" + file.name);
+
+        let uploadTask = storageRef.put(file);
+
+        uploadTask.on(
+          "state_changed",
+          snapshot => {},
+          error => {
             // Handle unsuccessful uploads
-          }, () => {
+          },
+          () => {
             // Handle successful uploads on complete
             // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
               this.product.images.push(downloadURL);
-              console.log('File available at', downloadURL);
+              console.log("File available at", downloadURL);
             });
-          });
-          
+          }
+        );
       }
-
-
-
-
     },
 
-    addNew(){
-        this.modal = 'new';
-        $('#product').modal('show');
+    reset() {
+      this.product = {
+        name: null,
+        description: null,
+        price: null,
+        tags: [],
+        images: []
+      };
     },
-    updateProduct(){
-        this.$firestore.products.doc(this.product.id).update(this.product);
+    addNew() {
+      this.modal = "new";
+      this.reset();
+      $("#product").modal("show");
+    },
+
+    updateProduct() {
+      fb.productsCollection.doc(this.product.id).update(this.product)
+      .then(() => {
           Toast.fire({
-            type: 'success',
-            title: 'Updated  successfully'
-          })
-
-           $('#product').modal('hide');
-    },
-
-    editProduct(product){
-      this.modal = 'edit';
-      this.product = product;
-      $('#product').modal('show');
-    },
-
-
-    deleteProduct(doc){
-
-
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.value) {
-
-          this.$firestore.products.doc(doc['.key']).delete()
-
-          Toast.fire({
-            type: 'success',
-            title: 'Deleted  successfully'
-          })
-
-        
-        }
+          type: "success",
+          title: "Updated  successfully"
+        });
       })
-
-
-        
+      .catch(err => {
+        throw err
+      })
+      // this.$firestore.products.doc(this.product.id).update(this.product);
+      $("#product").modal("hide");
     },
-    readData(){
 
-      
-     
+    editProduct(product) {
+      this.modal = "edit";
+      this.product = product;
+      $("#product").modal("show");
     },
-    addProduct(){
-      
-      this.$firestore.products.add(this.product);
-      
-          Toast.fire({
-            type: 'success',
-            title: 'Product created successfully'
+
+    deleteProduct(doc) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(result => {
+        if (result.value) {
+          fb.productsCollection.doc(doc['id']).delete()
+          .then(() => {
+             Toast.fire({
+            type: "success",
+            title: "Deleted  successfully"
+          });
           })
-
-      $('#product').modal('hide');
+          .catch(err => {
+            throw err
+          })         
+        }
+      });
+    },
+    readData() {},
+    addProduct() {
+      // this.$firestore.products.add(this.product);
+      fb.productsCollection
+        .add({
+          createdOn: new Date(),
+          userId: this.currentUser.uid,
+          productName: this.product.name,
+          description: this.product.description,
+          price: this.product.price,
+          tags: this.product.tags,
+          images: this.product.images
+        })
+        .then(() => {
+          Toast.fire({
+            type: "success",
+            title: "Product created successfully"
+          });
+          (this.product.name = ""),
+            (this.product.description = ""),
+            (this.product.price = ""),
+            (this.product.tags = ""),
+            (this.product.images = ""),
+            $("#product").modal("hide");
+        })
+        .catch(err => {
+          throw err;
+        });
     }
-
-  
   },
-  created(){
-  
-
-  }
+  created() {}
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
 </style>

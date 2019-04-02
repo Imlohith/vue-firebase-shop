@@ -19,8 +19,8 @@
                         <img class="img-responsive img-rounded" src="/img/user.png" alt="User picture">
                     </div>
                     <div class="user-info">
-                        <span class="user-name">Jhon
-                            <strong>Smith</strong>
+                        <span class="user-name">
+                            <strong>{{ userProfile.name }}</strong>
                         </span>
                         <span class="user-role">Administrator</span>
                         <span class="user-status">
@@ -67,7 +67,12 @@
                                 <span>Orders</span>
                             </router-link>
                         </li>
-
+                          <li>
+                            <router-link to="/admin/reviews">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>Reviews</span>
+                            </router-link>
+                        </li>
                         <li>
                             <a href="#" @click="logout()">
                                 <i class="fa fa-power-off"></i>
@@ -97,19 +102,23 @@
 <script>
 // @ is an alias to /src
 import Hero from "@/components/Hero.vue";
-import {fb} from '../firebase';
+const fb = require('../firebase')
+import { mapState } from 'vuex'
 
 export default {
   name: "admin",
   components: {
     Hero
   },
+  computed: {
+      ...mapState(['userProfile'])
+  },
   methods:{
       closeMenu(){
         $(".page-wrapper").toggleClass("toggled");
       },
       logout(){
-          fb.auth().signOut()
+          fb.auth.signOut()
           .then(() => {
               this.$router.replace('/');
           })

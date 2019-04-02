@@ -2,10 +2,12 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import jQuery from 'jquery';
-import {fb}   from './firebase'
+global.jQuery = jQuery
+global.$ = jQuery
+const fb = require('./firebase')
 import VueFirestore from 'vue-firestore'
+import { store } from './store'
 require('firebase/firestore')
-
 
 Vue.use(VueFirestore, {
   key: 'id',         // the name of the property. Default is '.key'.
@@ -15,8 +17,6 @@ Vue.use(VueFirestore, {
 
 Vue.use(VueFirestore)
 
-
-window.$ = window.jQuery = jQuery;
 
 import 'popper.js';
 import 'bootstrap';
@@ -43,10 +43,11 @@ Vue.config.productionTip = false;
 
 let app = '';
 
-fb.auth().onAuthStateChanged(function(user) {
+fb.auth.onAuthStateChanged(function(user) {
 
   if(!app){
     new Vue({
+      store,
       router,
       render: h => h(App)
     }).$mount("#app");

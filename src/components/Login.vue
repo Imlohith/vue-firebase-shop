@@ -6,8 +6,6 @@
             <div class="modal-content">
 
                 <div class="modal-body">
-
-
                         <ul class="nav nav-fill nav-pills mb-3" id="pills-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-login" role="tab" aria-controls="pills-login" aria-selected="true">Login</a>
@@ -57,11 +55,13 @@
                             <div class="form-group">
                                 <button class="btn btn-primary" @click="register">Signup</button>
                             </div>
-
                         </div>
-                        </div>
-                    
- 
+                    </div>
+                           <div class="d-flex justify-content-center">
+                                <div class="spinner-border" role="status" v-if="loading">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
                 </div>
            
             </div>
@@ -73,7 +73,8 @@
 
 <script>
 
-import {fb} from '../firebase'
+const fb = require('../firebase')
+import { mapState } from 'vuex'
 
 export default {
   name: "Login",
@@ -84,17 +85,21 @@ export default {
       return {
           name:null,
           email:null,
-          password:null
+          password:null,
+          loading: false
       }
   },
-
+  computed: {
+    //   ...mapState(['loading'])
+  },
   methods:{
       login(){
-
-          fb.auth().signInWithEmailAndPassword(this.email, this.password)
+          this.loading = true
+          fb.auth.signInWithEmailAndPassword(this.email, this.password)
                         .then(() => {
                         $('#login').modal('hide')
                           this.$router.replace('admin');  
+                          this.loading = false
                         })
                         .catch(function(error) {
                             // Handle Errors here.
@@ -107,13 +112,19 @@ export default {
                             }
                             console.log(error);
                     });
-
       },
       register(){
-            fb.auth().createUserWithEmailAndPassword(this.email, this.password)
+            this.loading = true
+            fb.auth.createUserWithEmailAndPassword(this.email, this.password)
                 .then((user) => {
-                    $('#login').modal('hide')
-                    this.$router.replace('admin');
+                    $('#login').modal('hide') 
+                    fb.usersCollection.doc(user.user.uid).set({
+                        userId: user.user.uid,
+                        name: this.name
+                    }).then(() => {
+                        this.loading = false
+                        this.$router.replace('admin')
+                    })
                 })
                 .catch(function(error) {
                 // Handle Errors here.
