@@ -291,6 +291,7 @@ export default {
         .add({
           createdOn: new Date(),
           userId: this.currentUser.uid,
+          storeName: this.userProfile.name,
           productName: this.product.name,
           description: this.product.description,
           price: this.product.price,

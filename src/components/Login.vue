@@ -39,7 +39,7 @@
                              <h5 class="text-center">Create New Account</h5>
                              
                             <div class="form-group">
-                                <label for="name">Your name</label>
+                                <label for="name">Your store name</label>
                                 <input type="text" v-model="name" class="form-control" id="name" placeholder="Your nice name">
                             </div>
 
@@ -57,6 +57,10 @@
                             </div>
                         </div>
                     </div>
+                    <p>
+                        <button class="btn btn-primary" @click="signupFacebook">continue with Facebook</button>
+                    </p>
+                    
                            <div class="d-flex justify-content-center">
                                 <div class="spinner-border" role="status" v-if="loading">
                                     <span class="sr-only">Loading...</span>
@@ -73,6 +77,7 @@
 
 <script>
 
+import firebase from 'firebase'
 const fb = require('../firebase')
 import { mapState } from 'vuex'
 
@@ -137,6 +142,21 @@ export default {
                 }
                 console.log(error);
             });
+      },
+      signupFacebook() {
+          const provider = new firebase.auth.FacebookAuthProvider();
+
+          firebase.auth().signInWithPopup(provider).then((result) => {
+              fb.usersCollection.doc(result.user.uid).set({
+                  userId: result.user.uid,
+                  name: result.user.displayName,
+              })
+              console.log(result.user.displayName)
+              this.$router.push('/admin')
+          })
+          .catch(err => {
+             throw err
+          })
       }
 
   }
@@ -144,6 +164,6 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style scoped>
 
 </style>

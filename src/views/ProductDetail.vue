@@ -7,7 +7,7 @@
 		<aside class="col-sm-5 border-right">
 <article class="gallery-wrap"> 
 <div class="img-big-wrap">
-  <div> <a href="#"><img src="https://s9.postimg.org/tupxkvfj3/image.jpg"></a></div>
+  <div> <a href="#"><img src="/img/mobile.png"></a></div>
 </div> <!-- slider-product.// -->
 </article> <!-- gallery-wrap .end// -->
 		</aside>
@@ -19,7 +19,6 @@
 	<span class="price h3 text-warning"> 
 		<span class="currency">US $</span><span class="num">1299</span>
 	</span> 
-	<span>/per kg</span> 
 </p> <!-- price-detail-wrap .// -->
 <dl class="item-property">
 
@@ -58,16 +57,16 @@ import { mapState } from 'vuex';
             }
         },
         computed: { 
-            ...mapState([''])
+            ...mapState(['products'])
         },
         methods: {
           
         },
-      mounted() {
-            this.$binding("products", fb.productsCollection).then(products => {
-            products = products;
-            });
-        },
+    //   mounted() {
+    //         this.$binding("products", fb.productsCollection).then(products => {
+    //         products = products;
+    //         });
+    //     },
     }
 </script>
 
