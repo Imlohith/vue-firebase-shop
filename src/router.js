@@ -14,7 +14,6 @@ const fb = require('./firebase')
 Vue.use(Router);
 
 const router =  new Router({
-  mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
@@ -33,8 +32,9 @@ const router =  new Router({
       component: Shop,
     }, 
     {
-      path: '/proview',
+      path: '/proview/:id',
       name: 'proview',
+      props: true,
       component: ProductView
     },
     {

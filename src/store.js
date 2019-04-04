@@ -46,7 +46,7 @@ export const store = new Vuex.Store({
     products: [],
     userProfile: {},
     hiddenPosts: [],
-    loading: false
+    loading: false,
   },
   actions: {
     clearData({commit}){
@@ -93,6 +93,15 @@ export const store = new Vuex.Store({
       } else {
         state.hiddenPosts = [];
       }
+    }
+  },
+  getters: {
+    loadSingle(state) {
+       return (id) => {
+         return state.products.find((product) => {
+           return product.userId === id
+         })
+       }
     }
   }
 });

@@ -2,8 +2,8 @@
   <div>
      <section class="jumbotron text-center">
     <div class="container">
-        <h1 class="jumbotron-heading">E-COMMERCE CONTACT</h1>
-        <p class="lead text-muted mb-0">Contact Page build with Bootstrap 4 !</p>
+        <h1 class="jumbotron-heading">CONTACT US</h1>
+        <p class="lead text-muted mb-0">Contact Page</p>
     </div>
 </section>
 <div class="container">
@@ -25,22 +25,22 @@
                 <div class="card-header bg-primary text-white"><i class="fa fa-envelope"></i> Contact us.
                 </div>
                 <div class="card-body">
-                    <form>
+                    <form @submit.prevent>
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter name" required>
+                            <input type="text" v-model="name" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Enter name" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email address</label>
-                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+                            <input type="email" class="form-control" id="email" v-model="email" aria-describedby="emailHelp" placeholder="Enter email" required>
                             <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                         </div>
                         <div class="form-group">
                             <label for="message">Message</label>
-                            <textarea class="form-control" id="message" rows="6" required></textarea>
+                            <textarea class="form-control" v-model="message" id="message" rows="6" required></textarea>
                         </div>
                         <div class="mx-auto">
-                        <button type="submit" class="btn btn-primary text-right">Submit</button></div>
+                        <button type="submit" class="btn btn-primary text-right" @click="fire">Submit</button></div>
                     </form>
                 </div>
             </div>
@@ -65,8 +65,35 @@
 </template>
 
 <script>
+const fb = require('../firebase.js')
     export default {
-        
+        data() {
+            return {
+               name: '',
+               email: '',
+               message: ''
+            }
+        },
+        methods: {
+            fire() {
+                fb.complaintDB.add({
+                    name: this.name,
+                    email: this.email,
+                    message: this.message
+                }).then(() => {
+                     Toast.fire({
+                        type: "success",
+                        title: "your complaint will be rectified soon"
+                    });
+                    this.name = '',
+                    this.email= '',
+                    this.message = ''
+                })
+                .catch(err => {
+                    throw err
+                })
+            }
+        }
     }
 </script>
 

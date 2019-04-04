@@ -12,7 +12,7 @@
                 </p>
                 <div class="hero-btn mt-5">
                     <button class="btn custom-btn btn-info mr-4">Explore</button>
-                    <button class="btn custom-btn btn-outline-secondary">Products</button>
+                    <button class="btn custom-btn btn-outline-secondary"><router-link to="/shop">Products</router-link></button>
                 </div>
               </div>
             </div>
