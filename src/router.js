@@ -9,6 +9,7 @@ import Reviews from "./views/Reviews.vue";
 import About from './views/About.vue';
 import Shop from './views/Shop.vue';
 import ProductView from './views/ProductDetail.vue';
+import Profile from './views/Profile.vue';
 const fb = require('./firebase')
 
 Vue.use(Router);
@@ -57,6 +58,11 @@ const router =  new Router({
           path: "orders",
           name: "orders",
           component: Orders
+        },
+        {
+          path: "profile",
+          name: "profile",
+          component: Profile
         },
         {
           path: "reviews",

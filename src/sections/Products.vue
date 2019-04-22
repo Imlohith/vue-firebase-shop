@@ -19,7 +19,7 @@
                         <li class="fa fa-star disable"></li>
                     </ul>
                     <h3 class="title"><a href="#">{{ product.storeName }}</a></h3>
-                    <div class="price"> $ {{ product.price}}</div>
+                    <div class="price"> <i class="fa fa-inr"></i> {{ product.price}}</div>
                 </div>
             </div>
          </div>

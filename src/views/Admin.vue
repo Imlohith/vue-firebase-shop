@@ -8,7 +8,7 @@
             <div class="sidebar-content">
                 <!-- sidebar-brand  -->
                 <div class="sidebar-item sidebar-brand">
-                    <router-link to="/" >Vue Shop</router-link>
+                    <router-link to="/" >Best deals</router-link>
                     <div id="close-sidebar" @click="closeMenu">
                         <i class="fas fa-times"></i>
                     </div>
@@ -22,7 +22,7 @@
                         <span class="user-name">
                             <strong>{{ userProfile.name }}</strong>
                         </span>
-                        <span class="user-role">Administrator</span>
+                        <span class="user-role">{{ userProfile.email }}</span>
                         <span class="user-status">
                             <i class="fa fa-circle"></i>
                             <span>Online</span>
@@ -65,6 +65,12 @@
                             <router-link to="/admin/orders">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>Orders</span>
+                            </router-link>
+                        </li>
+                         <li>
+                            <router-link to="/admin/profile">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>Profile</span>
                             </router-link>
                         </li>
                           <li>

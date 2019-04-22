@@ -23,6 +23,8 @@ const storage = firebase.storage
 const usersCollection = db.collection('users')
 const productsCollection = db.collection('products')
 const complaintDB = db.collection('complaintDB')
+const reviewDB = db.collection('reviews')
+const profiles = db.collection('profiles')
 
 export {
     db,
@@ -31,5 +33,7 @@ export {
     usersCollection,
     storage,
     productsCollection,
-    complaintDB
+    complaintDB,
+    reviewDB,
+    profiles
 }

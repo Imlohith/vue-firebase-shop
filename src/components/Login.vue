@@ -125,6 +125,7 @@ export default {
                     $('#login').modal('hide') 
                     fb.usersCollection.doc(user.user.uid).set({
                         userId: user.user.uid,
+                        email: user.user.email,
                         name: this.name
                     }).then(() => {
                         this.loading = false

@@ -18,7 +18,7 @@
 
 <p class="price-detail-wrap"> 
 	<span class="price h3 text-warning"> 
-		<span class="currency">INR </span><span class="num">{{ price }}</span>
+		<span class="currency"><i class="fa fa-inr"></i></span><span class="num"> {{ price }}</span>
 	</span> 
 </p> <!-- price-detail-wrap .// -->
 <dl class="item-property">
@@ -70,7 +70,7 @@
                                             <h5>
                                                 Sample Product</h5>
                                             <h5 class="price-text-color">
-                                                $199.99</h5>
+                                                <i class="fa fa-inr"></i>  199.99</h5>
                                         </div>
                                     </div>
                                      <div class="separator clear-left">
@@ -93,7 +93,7 @@
                                             <h5>
                                                 Product Example</h5>
                                             <h5 class="price-text-color">
-                                                $249.99</h5>
+                                                 <i class="fa fa-inr"></i> 249.99</h5>
                                         </div>
                                         <div class="rating hidden-sm col-md-6">
                                         </div>
@@ -118,7 +118,7 @@
                                             <h5>
                                                  Sample Product</h5>
                                             <h5 class="price-text-color">
-                                                $149.99</h5>
+                                                 <i class="fa fa-inr"></i> 149.99</h5>
                                         </div>
                                     </div>
                                     <div class="separator clear-left">
@@ -141,7 +141,7 @@
                                             <h5>
                                                 Sample Product</h5>
                                             <h5 class="price-text-color">
-                                                $199.99</h5>
+                                                 <i class="fa fa-inr"></i> 199.99</h5>
                                         </div>
                                     </div>
                                     <div class="separator clear-left">
@@ -158,15 +158,28 @@
                 </div>
             </div>
     </div>
+
+   <div class="row mt-4">
+            <div class="col-md-9">
+                <h3>
+                   Review and rating sections</h3>
+            </div>
+   </div>
+   <Review></Review>
+ 
 </div>
 <!--container.//-->
 </template>
 
 <script>
+import Review from '@/components/Review.vue'
 const fb = require('../firebase.js')
 import { mapState } from 'vuex';
     export default {
         props: ['id'],
+        components: {
+          Review
+        },
         data() {
             return {
                storeName: '',

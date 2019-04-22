@@ -26,6 +26,7 @@ fb.auth.onAuthStateChanged(user => {
     //     console.log(productsArray)
     //     store.commit('setPosts', productsArray)
     // })
+    
     fb.productsCollection.where('userId', '==' , user.uid).onSnapshot(querySnapShot => {
       let productsArray = [];
       querySnapShot.forEach(doc => {
